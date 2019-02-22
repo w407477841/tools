@@ -30,10 +30,8 @@ public class Timer {
     @Scheduled(cron = "0/3 * * * * ?")
     public void send(){
         System.out.println("发送数据 "+properties.getData());
-        ByteBuf byteBuf= Unpooled.buffer(properties.getData().length());
-        byteBuf.writeBytes(properties.getData().getBytes());
         try {
-            Const.clientChannels.get(Const.clientId).writeAndFlush(byteBuf);
+            Const.send(Const.clientChannels.get(Const.clientId),properties.getData());
         }catch (Exception e){
             e.printStackTrace();
             System.out.println("发送异常 ");

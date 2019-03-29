@@ -7,6 +7,7 @@ import com.xywg.tools.tcpforward.netty.client.thread.impl.SimpleClientThread;
 import com.xywg.tools.tcpforward.netty.common.Const;
 import com.xywg.tools.tcpforward.netty.common.XySession;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -41,11 +42,13 @@ public class AccetperHandler extends SimpleChannelInboundHandler<ByteBuf> {
              }
          }
         System.out.println("通过客户端转发数据");
-
+        System.out.println( "16进制形式："+  ByteBufUtil.hexDump(in).toUpperCase());
         int len = in.readableBytes();
         //  可读开始位置
         byte[] msgData = new byte[len];
         in.readBytes(msgData);
+        System.out.println( "字符形式："+  new String(msgData));
+
         ByteBuf byteBuf = Unpooled.buffer(len);
         byteBuf.writeBytes(msgData);
 

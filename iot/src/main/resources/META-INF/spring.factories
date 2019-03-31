@@ -1,5 +1,4 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   com.wyf.iot.auto.ServerAutoConfigure
-org.springframework.context.ApplicationContextAware = \
-  com.wyf.iot.common.SpringBeanUtils
+
 

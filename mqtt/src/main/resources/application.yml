@@ -8,3 +8,5 @@ netty:
        heart: 180 # 读超时时间
        backlog: 1024 #  Socket参数，服务端接受连接的队列长度，如果队列已满，客户端连接将被拒绝
        handler: com.xywg.iot.mqtt.modular.handler.MessageHandler # 默认处理
+       encoders: io.netty.handler.codec.http.HttpRequestDecoder
+       decoders: io.netty.handler.codec.http.HttpResponseEncoder

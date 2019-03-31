@@ -1,6 +1,8 @@
 package com.wyf.iot.properties;
 
 import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.handler.codec.MessageToMessageDecoder;
+import io.netty.handler.codec.MessageToMessageEncoder;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -32,6 +34,15 @@ public class NettyProperties {
    private int heart;
    /**  处理类 */
    private  Class<SimpleChannelInboundHandler> handler;
+   /**
+    * 编码器
+    */
+   private Class<MessageToMessageEncoder>[] encoders;
+   /**
+    *  解码器
+    */
+   private Class<MessageToMessageDecoder>[] decoders;
+
    /**  */
    private int bossThread;
    /**  */

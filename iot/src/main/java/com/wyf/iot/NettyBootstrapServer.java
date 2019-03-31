@@ -1,21 +1,25 @@
 package com.wyf.iot;
 
+import com.wyf.iot.auto.ServerAutoConfigure;
 import com.wyf.iot.common.IpUtils;
 import com.wyf.iot.common.RemotingUtil;
-import com.wyf.iot.common.SpringBeanUtils;
 import com.wyf.iot.properties.NettyProperties;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
-import io.netty.channel.ChannelFutureListener;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
 import io.netty.channel.epoll.Epoll;
 import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.MessageToMessageDecoder;
+import io.netty.handler.codec.MessageToMessageEncoder;
+import io.netty.handler.codec.http.HttpObjectAggregator;
+import io.netty.handler.codec.http.HttpServerCodec;
+import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
+import io.netty.handler.codec.mqtt.MqttDecoder;
+import io.netty.handler.codec.mqtt.MqttEncoder;
 import io.netty.handler.timeout.IdleStateHandler;
 import lombok.Getter;
 import lombok.Setter;
@@ -68,10 +72,10 @@ public class NettyBootstrapServer implements BootstrapServer {
                 .childHandler(new ChannelInitializer<SocketChannel>() {
                     @Override
                     protected void initChannel(SocketChannel ch) throws Exception {
-                        ch.pipeline()
-                        .addLast(new IdleStateHandler(serverBean.getHeart(),0,0))
-
-                        .addLast( SpringBeanUtils.getBean(serverBean.getHandler()));
+                        ChannelPipeline channelPipeline =   ch.pipeline();
+                        intProtocolHandler(channelPipeline,serverBean);
+                        channelPipeline.addLast(new IdleStateHandler(serverBean.getHeart(),0,0))
+                        .addLast( ServerAutoConfigure.getBean(serverBean.getHandler()));
                     }
                 })
                 // 立即发送
@@ -79,6 +83,7 @@ public class NettyBootstrapServer implements BootstrapServer {
                 // Socket参数，连接保活，默认值为False。启用该功能时，TCP会主动探测空闲连接的有效性。可以将此功能视为TCP的心跳机制，需要注意的是：默认的心跳间隔是7200s即2小时。Netty默认关闭该功能
                 .childOption(ChannelOption.SO_KEEPALIVE, serverBean.isKeepalive())
                 .childOption(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT);
+
         bootstrap.bind(IpUtils.getHost(),serverBean.getPort()).addListener((ChannelFutureListener) channelFuture -> {
             if (channelFuture.isSuccess()){
                 log.info("服务端启动成功【" + IpUtils.getHost() + ":" + serverBean.getPort() + "】");
@@ -88,6 +93,38 @@ public class NettyBootstrapServer implements BootstrapServer {
             }
         });
     }
+
+
+
+    private  void intProtocolHandler(ChannelPipeline channelPipeline, NettyProperties serverBean){
+        Class<MessageToMessageDecoder>[] decoders =   serverBean.getDecoders();
+        Class<MessageToMessageEncoder>[] encoders = serverBean.getEncoders();
+        if(decoders!=null&&decoders.length>0){
+            for(Class<MessageToMessageDecoder> clazz: decoders){
+                try {
+                    channelPipeline.addLast(clazz.newInstance());
+                } catch (InstantiationException e) {
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+         if(encoders!=null&&encoders.length>0){
+                for( Class<MessageToMessageEncoder> clazz : encoders){
+                    try {
+                        channelPipeline.addLast(clazz.newInstance());
+                    } catch (InstantiationException e) {
+                        e.printStackTrace();
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+                }
+         }
+        }
+
+
+    }
+
     /**
      * 初始化EnentPool 参数
      */

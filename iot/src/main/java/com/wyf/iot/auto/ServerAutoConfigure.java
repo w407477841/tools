@@ -1,9 +1,12 @@
 package com.wyf.iot.auto;
 
 import com.wyf.iot.properties.NettyProperties;
+import org.springframework.beans.BeansException;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -16,8 +19,38 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConditionalOnClass
 @EnableConfigurationProperties({NettyProperties.class})
-public class ServerAutoConfigure {
+public class ServerAutoConfigure implements ApplicationContextAware {
 
+    private static ApplicationContext applicationContext;
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        System.out.println("进入");
+        if(ServerAutoConfigure.applicationContext == null) {
+            System.out.println("设置spring上下文");
+            ServerAutoConfigure.applicationContext = applicationContext;
+        }
+    }
+
+    //获取applicationContext
+    public static ApplicationContext getApplicationContext() {
+        return applicationContext;
+    }
+
+    //通过name获取 Bean.
+    public static Object getBean(String name){
+        return getApplicationContext().getBean(name);
+    }
+
+    //通过class获取Bean.
+    public static <T> T getBean(Class<T> clazz){
+        return getApplicationContext().getBean(clazz);
+    }
+
+    //通过name,以及Clazz返回指定的Bean
+    public static <T> T getBean(String name,Class<T> clazz){
+        return getApplicationContext().getBean(name, clazz);
+    }
 
     private static  final  int _BLACKLOG =   1024;
 

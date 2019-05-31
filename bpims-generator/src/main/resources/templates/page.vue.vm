@@ -1,0 +1,426 @@
+<!--
+
+
+
+-->
+
+<template>
+  <el-container class="container">
+    <left-tree @nodeClick="getleftTreeId"></left-tree>
+    <el-main>
+      <div class="toolbar">
+        <el-form :inline="true">
+          <el-form-item>
+            <el-input v-model="keyword" class="toolbar-search" placeholder="单据编号" clearable></el-input>
+            <el-button type="primary" size="mini" class="el-icon-search" @click="handleSearch">查询</el-button>
+          </el-form-item>
+          <autoButton
+            :operationPrex="operationPrex"
+            :sels="sels"
+            @clickInsert="handleAdd"
+            @clickSubmit="handleSubmit(1)"
+            @clickCancel="handleSubmit(0)"
+            @clickBatchDelete="deleteRow"
+          ></autoButton>
+        </el-form>
+      </div>
+      <el-table
+        size="small"
+        :data="listData"
+        v-height
+        :height="maxHeight"
+        show-overflow-tooltip
+        highlight-current-row
+        @selection-change="selsChange"
+      >
+        <el-table-column show-overflow-tooltip type="selection" min-width="100"></el-table-column>
+        <el-table-column show-overflow-tooltip type="index" min-width="100"></el-table-column>
+         <el-table-column show-overflow-tooltip prop="code" label="单据编号" min-width="200"></el-table-column>
+        <el-table-column
+          show-overflow-tooltip
+          prop="status"
+          label="状态"
+          width="100"
+          :formatter="statusFormatter"
+        ></el-table-column>
+        <el-table-column show-overflow-tooltip prop="orgName" label="编制机构" width="120"></el-table-column>
+        <el-table-column show-overflow-tooltip prop="createUserName" label="编制人" width="100"></el-table-column>
+        <el-table-column show-overflow-tooltip prop="createTime" label="编制日期" min-width="120"></el-table-column>
+        #foreach($field in ${table.fields})
+        #if($field.propertyName == 'code')
+        #elseif($field.propertyName == 'status')
+        #elseif($field.propertyName == 'orgName')
+        #elseif($field.propertyName == 'orgId')
+        #elseif($field.propertyName == 'id')
+        #elseif($field.propertyName == 'createUserName')
+        #elseif($field.propertyName == 'createUser')
+        #elseif($field.propertyName == 'modifyUser')
+        #elseif($field.propertyName == 'modifyTime')
+        #elseif($field.propertyName == 'createTime')
+        #elseif($field.propertyName == 'isDel')
+        #elseif($field.propertyName == 'comments')
+        #else
+            #if(${field.propertyType.equals("Date")})
+                   <el-table-column show-overflow-tooltip prop="${field.propertyName}" label="${field.comment}" :formatter="dateFormatter" min-width="180"></el-table-column>
+                  #else
+                <el-table-column show-overflow-tooltip prop="${field.propertyName}" label="${field.comment}" min-width="180"></el-table-column>
+                #end
+        #end
+        #end
+        <el-table-column show-overflow-tooltip prop="comments" label="备注" min-width="300"></el-table-column>
+        <el-table-column show-overflow-tooltip label="操作" fixed="right" width="300" align="center">
+          <template slot-scope="scope">
+            <autoRightButton
+              :operationPrex="operationPrex"
+              @clickUpdate="viewRow(scope.row,'edit')"
+              @clickDelete="deleteRow([scope.row])"
+              @clickView="viewRow(scope.row)"
+              :current="{index:scope.$index,row:scope.row}"
+            ></autoRightButton>
+          </template>
+        </el-table-column>
+      </el-table>
+      <div class="paginationBox">
+        <el-pagination
+          @size-change="changePageSize"
+          @current-change="handleCurrentChange"
+          :current-page="pageIndex"
+          :page-sizes="[10, 20, 30, 50]"
+          :page-size="pageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="total"
+        ></el-pagination>
+      </div>
+    </el-main>
+    <el-dialog
+      class="details-box"
+      :title="dialogAdd.title"
+      :visible.sync="dialogAdd.show"
+      :close-on-click-modal="false"
+      width="80%"
+    >
+      <el-tabs type="border-card" v-model="formTab_ActiveName">
+        <el-tab-pane name="0" label="基本信息">
+          <el-form :model="editForm" ref="editForm" :rules="formRules" label-width="100px">
+            <el-collapse v-model="activeNames">
+              <el-collapse-item title="基本信息" name="1">
+                <el-col :span="8">
+                  <el-form-item label="单据编号" prop="code">
+                    <el-input v-model="editForm.code" placeholder="单据编号自动生成" :disabled="true"></el-input>
+                  </el-form-item>
+                </el-col>
+           #foreach($field in ${table.fields})
+    #if($field.propertyName == 'code')
+    #elseif($field.propertyName == 'status')
+    #elseif($field.propertyName == 'orgName')
+    #elseif($field.propertyName == 'orgId')
+    #elseif($field.propertyName == 'id')
+    #elseif($field.propertyName == 'createUserName')
+    #elseif($field.propertyName == 'createUser')
+    #elseif($field.propertyName == 'modifyUser')
+    #elseif($field.propertyName == 'modifyTime')
+    #elseif($field.propertyName == 'createTime')
+    #elseif($field.propertyName == 'isDel')
+    #elseif($field.propertyName == 'comments')
+    #else
+        <el-col :span="8">
+                  <el-form-item label="${field.comment}" prop="${field.propertyName}">
+                  #if(${field.propertyType.equals("Date")})
+                   <el-date-picker
+                      format="yyyy-MM-dd"
+                      type="date"
+                      :clearable="false"
+                      v-model="editForm.${field.propertyName}"
+                      :editable="false"
+                      :disabled="dialogAdd.edit"
+                    ></el-date-picker>
+                  #elseif(${field.propertyType.equals("String")})
+                  <el-input v-model="editForm.${field.propertyName}" maxlength="${field.length}"  :disabled="dialogAdd.edit"></el-input>
+                  #else
+                  <el-input v-model="editForm.${field.propertyName}"  :disabled="dialogAdd.edit"></el-input>
+                #end
+                  </el-form-item>
+        </el-col>
+        #end
+    #end
+              </el-collapse-item>
+              <el-collapse-item title="备注信息" name="2">
+                <el-row>
+                  <el-col :span="24">
+                    <el-input
+                      type="textarea"
+                      v-model="editForm.comments"
+                      :rows="4"
+                      :disabled="dialogAdd.edit"
+                      :maxlength="200"
+                    ></el-input>
+                  </el-col>
+                </el-row>
+              </el-collapse-item>
+            </el-collapse>
+          </el-form>
+        </el-tab-pane>
+
+        <el-tab-pane name="1" label="附件信息">
+          <filePane
+            ref="filePane"
+            basePath="accept"
+            :fileData="fileData"
+            :edit="dialogAdd.edit"
+            @data="listenToMyFile"
+          >
+            <el-table-column prop="code" label="文件编号" mini-width="120"></el-table-column>
+            <el-table-column prop="name" label="文件名称" mini-width="120"></el-table-column>
+            <el-table-column prop="type" label="文件类型" mini-width="120"></el-table-column>
+            <el-table-column prop="size" label="文件大小" mini-width="120"></el-table-column>
+          </filePane>
+        </el-tab-pane>
+      </el-tabs>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="cancelDialog()">取消</el-button>
+        <el-button
+          v-if="!dialogAdd.edit"
+          type="primary"
+          @click="addSubmit"
+          :disabled="dialogAdd.edit"
+        >保存</el-button>
+      </div>
+    </el-dialog>
+
+
+
+  </el-container>
+</template><script>
+import formatter from "@/mixins/formatter.js";
+import leftTree from "@/zujian/api/leftTree.vue";
+import fbs from "@/zujian/FBS_dialog_all.vue";
+import Region from "@/components/mechanical/common/region";
+
+/**机械设备固定资产台账*********************
+
+export const list${entity} = params => {
+  return _axios.get(`#if(${package.ModuleName})/${package.ModuleName}#end/#if(${controllerMappingHyphenStyle})${controllerMappingHyphen}#else${table.entityPath}#end/pageList`, { params });
+};
+export const info${entity} = params => {
+  return _axios.get(`#if(${package.ModuleName})/${package.ModuleName}#end/#if(${controllerMappingHyphenStyle})${controllerMappingHyphen}#else${table.entityPath}#end/selectInfo`, { params });
+};
+export const insert${entity} = params => {
+  return _axios.post(`#if(${package.ModuleName})/${package.ModuleName}#end/#if(${controllerMappingHyphenStyle})${controllerMappingHyphen}#else${table.entityPath}#end/insert`, params);
+};
+export const update${entity} = params => {
+  return _axios.post(`#if(${package.ModuleName})/${package.ModuleName}#end/#if(${controllerMappingHyphenStyle})${controllerMappingHyphen}#else${table.entityPath}#end/update`, params);
+};
+export const delete${entity} = params => {
+  return _axios.post(`#if(${package.ModuleName})/${package.ModuleName}#end/#if(${controllerMappingHyphenStyle})${controllerMappingHyphen}#else${table.entityPath}#end/delete`, params);
+};
+export const submit${entity} = params => {
+  return _axios.post(`#if(${package.ModuleName})/${package.ModuleName}#end/#if(${controllerMappingHyphenStyle})${controllerMappingHyphen}#else${table.entityPath}#end/submit`, params);
+};
+*/
+import {
+  list${entity},
+  info${entity},
+  insert${entity},
+  update${entity},
+  delete${entity},
+  submit${entity}
+} from "../api/lease.js";
+
+export default {
+  mixins: [formatter],
+  data() {
+    return {
+      keyword: "",
+      operationPrex: "mechanical:rent:into",
+      listData: [],
+      fileData: [],
+      sels: [],
+      total: 0,
+      editFormVisible: false,
+      editForm: { chargeType: [] },
+      formRules: {},
+      regionVisible: false,
+    };
+  },
+
+  mounted() {
+    this.getList();
+  },
+
+  methods: {
+    getleftTreeId(row) {
+      this.isInclude = row.isInclude;
+      this.orgId = row.orgId;
+      this.pageIndex = 1;
+      this.getList();
+    },
+
+    handleSearch() {
+      this.pageIndex = 1;
+      this.getList();
+    },
+
+    handleAdd() {
+      this.dialogAdd = {
+        edit: false,
+        add: true,
+        title: "新增",
+        show: true
+      };
+
+      setTimeout(
+        () => {
+          this.$refs.editForm.resetFields();
+          this.editForm = {
+            signDate: this.moment().format("YYYY-MM-DD"),
+            chargeType: []
+          };
+          this.mechanicalDetail = [];
+          this.fileData = [];
+        },
+
+        0
+      );
+    },
+
+    handleSubmit(status) {
+      #[[this.$confirm(]]#
+        `确认${
+        status==1 ? "": "取消"
+      }
+
+      提交选中记录吗？`,
+        "提示",
+        {
+          type: "warning"
+        }
+      ).then(() => {
+        var ids = this.sels.map(item => item.id).toString();
+
+        let params = {
+          ids: ids,
+          status: status
+        };
+
+        submit${entity}(params).then(res => {
+          if ((res.code = "000000")) {
+            this.getList();
+          }
+        });
+      });
+    },
+
+    getList() {
+      let params = {
+        pageSize: this.pageSize,
+        pageIndex: this.pageIndex,
+        keyword: this.keyword,
+        isInclude: this.isInclude,
+        orgId: this.orgId
+      };
+
+      list${entity}(params).then(res => {
+        this.listData = res.data;
+        this.total = res.total;
+      });
+    },
+    viewRow(row, type = "view") {
+      info${entity}({
+        id: row.id
+      }).then(res => {
+        this.editForm = res.data.body;
+        this.fileData = res.data.files;
+
+        if (type == "edit") {
+          this.dialogAdd = {
+            edit: false,
+            add: true,
+            title: "编辑",
+            show: true
+          };
+        } else if (type == "view") {
+          this.dialogAdd = {
+            edit: true,
+            add: true,
+            title: "查看",
+            show: true
+          };
+        }
+      });
+    },
+
+    deleteRow(sels = this.sels  ) {
+      #[[this.$confirm("确认删除选中记录吗？", "提示", {]]#
+        type: "warning"
+      }).then(() => {
+        let ids = sels.map(item => item.id).toString();
+
+        let params = {
+          ids: ids
+        };
+
+        delete${entity}(params).then(res => {
+          if ((res.code = "000000")) {
+            this.pageIndex = 1;
+            this.getList();
+          }
+        });
+      });
+    },
+
+    addSubmit() {
+      #[[this.$refs.editForm.validate(valid => {]]#
+if (valid) {
+#[[this.$confirm("确认保存吗？", "提示", {]]#
+confirmButtonText: "确定",
+cancelButtonText: "取消",
+type: "warning"
+}).then(() => {
+let params = {
+body: {
+body: this.editForm,
+files: this.fileData
+}
+};
+
+let method;
+
+if (this.dialogAdd.title == "新增") {
+method = insert${entity}(params);
+} else if (this.dialogAdd.title == "编辑") {
+method = update${entity}(params);
+}
+
+method.then(res => {
+this.dialogAdd.show = false;
+this.getList();
+});
+});
+}
+});
+    },
+    listenToMyFile(data) {
+      this.fileData = data;
+    },
+    selsChange(sels) {
+      this.sels = sels;
+    },
+
+    handleCurrentChange(val) {
+      this.pageIndex = val;
+      this.getList();
+    },
+
+    changePageSize(val) {
+      this.pageSize = val;
+      this.getList();
+    }
+  },
+
+  components: {
+    leftTree,
+    fbs,
+    Region
+  }
+};
+</script>

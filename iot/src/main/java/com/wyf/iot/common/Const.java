@@ -56,4 +56,23 @@ public interface Const {
         return sb.toString();
     }
 
+    /**
+     * 根据16进账字符串计算出CRC 校验码  高位在前  低位在后
+     * @param crcOriginalString
+     * @return
+     */
+     static String getCRC16(String crcOriginalString){
+        String newStr=crcOriginalString.replaceAll(" ","");
+        String regex = "(.{2})";
+        newStr = newStr.replaceAll (regex, "$1 ");
+
+        //计算出新的CRC16
+        byte[] dd = Crc16Util.getData(newStr.split(" "));
+        String crcString = Crc16Util.byteTo16String(dd).toUpperCase();
+        //计算出来的校验位(去除多余的原始数据位,只保留CRC位)
+        String crcCode = crcString.substring(crcString.length() - 6).replaceAll(" ", "");
+        //将低位在前转为高位在前
+        return  crcCode.substring(2, 4) + crcCode.substring(0, 2);
+    }
+
 }

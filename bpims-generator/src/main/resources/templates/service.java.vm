@@ -1,0 +1,66 @@
+package ${package.Service};
+
+import ${package.Entity}.${entity};
+import ${package.Dto}.${entity}DTO;
+import ${superServiceClassPackage};
+import com.xingyun.bpims.dto.RequestDTO;
+import com.xingyun.bpims.dto.ResultDTO;
+import java.util.List;
+/**
+ * <p>
+ * $!{table.comment} 服务类
+ * </p>
+ *
+ * @author ${author}
+ * @since ${date}
+ */
+#if(${kotlin})
+interface ${table.serviceName} : ${superServiceClass}<${entity}>
+#else
+public interface ${table.serviceName} extends ${superServiceClass}<${entity}> {
+
+        /**
+            *  新增 合同
+            * @param info
+            * @return
+            */
+        ResultDTO<String> insert${entity}(${entity}DTO info);
+
+        /**
+         *  修改合同
+         * @param info
+         * @return
+         */
+        ResultDTO<String> update${entity}(${entity}DTO info);
+
+        /**
+         *  删除合同
+         * @param ids
+         * @return
+         */
+        ResultDTO<String> delete${entity}(List<Integer> ids);
+
+        /**
+         * 分页查询
+         * @param request
+         * @return
+         */
+        ResultDTO  select${entity}Page(RequestDTO request );
+
+        /**
+         *  查询单条
+         * @param id
+         * @return
+         */
+        ResultDTO select${entity}ById(Integer id);
+
+
+        /**
+         * 修改提交状态
+         * @param request 参数
+         * @return 返回
+         */
+        ResultDTO<String> submit(RequestDTO request);
+
+        }
+#end

@@ -1,6 +1,10 @@
 package com.xywg.iot.mqtt.modular.handler;
 
 import cn.hutool.http.ContentType;
+import cn.hutool.json.JSONUtil;
+import com.wyf.iot.common.Const;
+import com.xywg.iot.mqtt.modular.response.Response;
+import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -20,17 +24,21 @@ import java.util.regex.Pattern;
 @Slf4j
 @Component
 @ChannelHandler.Sharable
-public class MessageHandler extends SimpleChannelInboundHandler<HttpRequest> {
-    private final  Pattern pattern  = Pattern.compile("\r|\n");
+public class MessageHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, HttpRequest in) throws Exception {
-        System.out.println("in");
+    protected void channelRead0(ChannelHandlerContext ctx, FullHttpRequest in) throws Exception {
+           ByteBuf content =  in.content();
+           String request =  Const.bytebuf2ascii(content);
+           System.out.println(request);
             FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1,HttpResponseStatus.OK);
-            StringBuffer sb = new StringBuffer();
-            sb.append("{\"message\":\"ok\"}");
-            response.headers().set(HttpHeaderNames.CONTENT_LENGTH,sb.length()).set(HttpHeaderNames.DATE,new Date()).set(HttpHeaderNames.CONTENT_TYPE,ContentType.JSON);
-            response.content().writeBytes(sb.toString().getBytes());
+            Response rsp = new Response();
+            rsp.setCode(200);
+            rsp.setData("hello world");
+            rsp.setMessage("ok");
+            String json = JSONUtil.toJsonStr(rsp);
+            response.headers().set(HttpHeaderNames.CONTENT_LENGTH,json.length()).set(HttpHeaderNames.DATE,new Date()).set(HttpHeaderNames.CONTENT_TYPE,ContentType.JSON);
+            response.content().writeBytes(json.getBytes());
             ctx.writeAndFlush(response);
 
     }

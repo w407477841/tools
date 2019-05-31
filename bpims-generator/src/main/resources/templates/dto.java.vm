@@ -1,0 +1,21 @@
+package ${package.Dto};
+
+import ${package.Entity}.${entity};
+import ${package.Entity}.${entity}File;
+import lombok.Data;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.List;
+
+
+@Data
+public class ${entity}DTO {
+
+    private ${entity} body;
+    private List<${entity}File> files;
+
+
+
+
+}

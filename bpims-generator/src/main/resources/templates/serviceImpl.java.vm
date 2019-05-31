@@ -1,0 +1,178 @@
+package ${package.ServiceImpl};
+
+import ${package.Entity}.${entity};
+import ${package.Dto}.${entity}DTO;
+import ${package.Entity}.${entity}File;
+import ${package.Service}.I${entity}FileService;
+import ${package.Mapper}.${table.mapperName};
+import ${package.Service}.${table.serviceName};
+import ${superServiceImplClassPackage};
+
+import com.xingyun.bpims.common.constant.DocumentCodeEnum;
+import com.xingyun.bpims.dto.ResultDTO;
+import com.xingyun.bpims.service.common.DocumentCodeService;
+import com.xingyun.bpims.service.system.SysOrganizationService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import java.util.List;
+import com.xingyun.bpims.common.constant.OperationEnum;
+import java.util.Date;
+import org.springframework.util.CollectionUtils;
+import com.xingyun.bpims.util.Constant;
+import com.xingyun.bpims.util.StringUtil;
+import com.xingyun.bpims.dto.RequestDTO;
+import java.util.ArrayList;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import com.xingyun.bpims.util.UUIDUtil;
+/**
+ * <p>
+ * $!{table.comment} 服务实现类
+ * </p>
+ *
+ * @author ${author}
+ * @since ${date}
+ */
+@Service
+#if(${kotlin})
+open class ${table.serviceImplName} : ${superServiceImplClass}<${table.mapperName}, ${entity}>(), ${table.serviceName} {
+
+        }
+#else
+        public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.mapperName}, ${entity}> implements ${table.serviceName} {
+
+
+
+        private final DocumentCodeService documentCodeService;
+        private final SysOrganizationService organizationService;
+        private final I${entity}FileService fileService;
+        @Autowired
+        public ${table.serviceImplName}(DocumentCodeService documentCodeService, SysOrganizationService organizationService, I${entity}FileService fileService) {
+        this.documentCodeService = documentCodeService;
+        this.organizationService = organizationService;
+        this.fileService = fileService;
+        }
+
+
+        @Override
+        @Transactional(rollbackFor = Exception.class)
+        public ResultDTO<String> insert${entity}(${entity}DTO deviceContractDTO) {
+        String code = documentCodeService.getDocumentCode(DocumentCodeEnum.${table.name}.table(),DocumentCodeEnum.${table.name}.type());
+        ${entity} projectDeviceContract = deviceContractDTO.getBody();
+        projectDeviceContract.setCode(code);
+        projectDeviceContract.setStatus(0);
+        // 新增
+        this.insert(projectDeviceContract);
+        batchdetele(projectDeviceContract.getId());
+        batchinsert(deviceContractDTO,projectDeviceContract.getId());
+
+        return      ResultDTO.resultFactory(OperationEnum.insert_success);
+        }
+        @Transactional(rollbackFor = Exception.class)
+        public void batchinsert(${entity}DTO deviceContractDTO,Integer infoId){
+        /** 文件 */
+        if (!CollectionUtils.isEmpty(deviceContractDTO.getFiles())) {
+            // 请你自己去DocumentCodeEnum 加下 谢谢
+        String code = documentCodeService.getCode(DocumentCodeEnum.${table.name}.type());
+        for (${entity}File info : deviceContractDTO.getFiles()) {
+        info.setInfoId(infoId);
+        if(StrUtil.isBlank(info.getCode())) {
+        info.setCode(UUIDUtil.getFileUUid(code));
+        }
+
+        }
+        fileService.insertBatch(deviceContractDTO.getFiles());
+        }
+        }
+
+        @Transactional(rollbackFor = Exception.class)
+        public void batchdetele(Integer infoId){
+        /** 文件 */
+        Wrapper<${entity}File> fileWrapper = new EntityWrapper();
+        fileWrapper.eq("info_id", infoId);
+        fileService.delete(fileWrapper);
+
+        }
+
+        @Override
+        @Transactional(rollbackFor = Exception.class)
+        public ResultDTO<String> update${entity}(${entity}DTO deviceContractDTO) {
+        ${entity} projectDeviceContract = deviceContractDTO.getBody();
+        // 修改 合同
+        projectDeviceContract.setCreateTime(null);
+        projectDeviceContract.setCreateUser(null);
+        this.updateById(projectDeviceContract);
+        batchdetele(projectDeviceContract.getId());
+        batchinsert(deviceContractDTO,projectDeviceContract.getId());
+
+        return ResultDTO.resultFactory(OperationEnum.update_success);
+        }
+
+        @Override
+        @Transactional(rollbackFor = Exception.class)
+        public ResultDTO<String> delete${entity}(List<Integer> ids) {
+
+        if(!CollectionUtils.isEmpty(ids)){
+        this.deleteBatchIds(ids);
+        }
+
+        return ResultDTO.resultFactory(OperationEnum.delete_success);
+        }
+
+        @Override
+        public ResultDTO select${entity}Page(RequestDTO request) {
+
+        Wrapper<${entity}> wrapper = new EntityWrapper<>();
+        if (request.getIsInclude() != null && "1".equals(request.getIsInclude())) {
+        List<Integer> orgIds = organizationService.getUnderOrgIdListWithCache(request.getOrgId());
+        wrapper.in("a.org_id", orgIds);
+        }else{
+        wrapper.eq("a.org_id",request.getOrgId());
+        }
+        wrapper.like("a.code", request.getKeyword())
+        .eq("a.is_del", 0)
+        .orderBy("a.create_time", false);
+        PageHelper.startPage(request.getPageIndex(),request.getPageSize());
+        Page<${entity}> page = (Page<${entity}>) baseMapper.pageList(wrapper);
+        return new ResultDTO(true,page.getResult(), null,page.getTotal());
+        }
+
+        @Override
+        public ResultDTO select${entity}ById(Integer id) {
+        ResultDTO<Object> result = new ResultDTO();
+        ${entity}DTO deviceContractDTO =new ${entity}DTO();
+        deviceContractDTO.setBody(this.selectById(id));
+
+        Wrapper<${entity}File> fileWrapper = new EntityWrapper();
+        fileWrapper.eq("info_id", id);
+        deviceContractDTO.setFiles(fileService.selectList(fileWrapper));
+
+        result.setData(deviceContractDTO);
+        result.setCode(Constant.SUCCESS_CODE);
+        result.setSuceess(true);
+        return result;
+        }
+
+        @Override
+        @Transactional(rollbackFor = Exception.class)
+        public ResultDTO<String> submit(RequestDTO request) {
+        List<Integer> ids = StringUtil.string2List(request.getIds());
+        List<${entity}> list = new ArrayList<>();
+        for (Integer id : ids) {
+        ${entity} apply = new ${entity}();
+        apply.setId(id);
+        apply.setStatus(request.getStatus());
+        list.add(apply);
+        }
+        this.updateBatchById(list);
+        if (request.getStatus() == 1) {
+        return ResultDTO.resultFactory(OperationEnum.submit_success);
+        }
+        return ResultDTO.resultFactory(OperationEnum.cancel_submit_success);
+        }
+
+        }
+#end

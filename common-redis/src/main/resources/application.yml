@@ -1,0 +1,14 @@
+spring:
+  ################## redis ######################
+    redis:
+        database: 8
+        host: 121.43.151.100
+        port: 6379
+        password: duanjudy@123
+        timeout: 10000
+        jedis:
+          pool:
+            max-active: 8 #连接池最大连接数(使用负值表示没有限制)
+            max-wait: -1  #连接池最大阻塞等待时间(负值表示没有限制)
+            max-idle: 5  #连接池中的最大空闲连接
+            min-idle: 0

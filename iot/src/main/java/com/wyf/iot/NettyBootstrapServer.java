@@ -73,7 +73,7 @@ public class NettyBootstrapServer implements BootstrapServer {
                     @Override
                     protected void initChannel(SocketChannel ch) throws Exception {
                         ChannelPipeline channelPipeline =   ch.pipeline();
-                        intProtocolHandler(channelPipeline,serverBean);
+                        serverBean.getCoderChain().newInstance().intProtocolHandler(channelPipeline,serverBean);
                         channelPipeline.addLast(new IdleStateHandler(serverBean.getHeart(),0,0))
                         .addLast( ServerAutoConfigure.getBean(serverBean.getHandler()));
                     }
@@ -96,34 +96,7 @@ public class NettyBootstrapServer implements BootstrapServer {
 
 
 
-    private  void intProtocolHandler(ChannelPipeline channelPipeline, NettyProperties serverBean){
-        Class<MessageToMessageDecoder>[] decoders =   serverBean.getDecoders();
-        Class<MessageToMessageEncoder>[] encoders = serverBean.getEncoders();
-        if(decoders!=null&&decoders.length>0){
-            for(Class<MessageToMessageDecoder> clazz: decoders){
-                try {
-                    channelPipeline.addLast(clazz.newInstance());
-                } catch (InstantiationException e) {
-                    e.printStackTrace();
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                }
-            }
-         if(encoders!=null&&encoders.length>0){
-                for( Class<MessageToMessageEncoder> clazz : encoders){
-                    try {
-                        channelPipeline.addLast(clazz.newInstance());
-                    } catch (InstantiationException e) {
-                        e.printStackTrace();
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
-                    }
-                }
-         }
-        }
 
-
-    }
 
     /**
      * 初始化EnentPool 参数

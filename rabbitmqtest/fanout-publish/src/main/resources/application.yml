@@ -1,0 +1,15 @@
+
+spring:
+  rabbitmq:
+      username: guest
+      password: guest
+      addresses: 118.24.111.210:5672
+      publisher-confirms: true #发送确认
+      publisher-returns: true   #返回错误确认
+      listener:
+        direct:
+          acknowledge-mode: manual
+        simple:
+          acknowledge-mode: manual
+server:
+  port: 7575

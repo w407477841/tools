@@ -1,0 +1,202 @@
+package ${package.Controller};
+
+
+import org.springframework.web.bind.annotation.RequestMapping;
+
+#if(${restControllerStyle})
+import org.springframework.web.bind.annotation.RestController;
+#else
+import org.springframework.stereotype.Controller;
+#end
+#if(${superControllerClassPackage})
+import ${superControllerClassPackage};
+#end
+import com.xiaoleilu.hutool.json.JSONUtil;
+import com.xingyun.bpims.common.constant.DocumentCodeEnum;
+import com.xingyun.bpims.common.constant.OperationEnum;
+import com.xingyun.bpims.dto.PostRequestDTO;
+import com.xingyun.bpims.dto.RequestDTO;
+import com.xingyun.bpims.dto.ResultDTO;
+import ${package.Entity}.${entity};
+import ${package.Service}.${table.serviceName};
+import com.xingyun.bpims.util.StringUtil;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import ${package.Dto}.${entity}DTO;
+import lombok.extern.slf4j.Slf4j;
+import java.util.List;
+
+/**
+ * <p>
+ * $!{table.comment} 前端控制器
+ * </p>
+ *
+ * @author ${author}
+ * @since ${date}
+ */
+#if(${restControllerStyle})
+@RestController
+#else
+@Controller
+
+#end
+@RequestMapping("#if(${package.ModuleName})/${package.ModuleName}#end/#if(${controllerMappingHyphenStyle})${controllerMappingHyphen}#else${table.entityPath}#end")
+@Slf4j
+#if(${kotlin})
+class ${table.controllerName}#if(${superControllerClass}) : ${superControllerClass}()#end
+
+#else
+    #if(${superControllerClass})
+    public class ${table.controllerName} extends ${superControllerClass} {
+    #else
+    public class ${table.controllerName} {
+    #end
+
+    @Autowired
+    private ${table.serviceName} service;
+
+
+/**
+* 新增
+*
+* @param request 参数
+* @return 结果
+*/
+@PostMapping("insert")
+@ApiOperation("insert${entity}")
+public ResultDTO<String> insert${entity}(@RequestBody PostRequestDTO<${entity}DTO> request) {
+
+        log.info("{} 新增接口，参数{}",DocumentCodeEnum.${table.name}.type(),JSONUtil.toJsonStr(request));
+        try {
+        return service.insert${entity}(request.getBody());
+        }catch (Exception e){
+        if(log.isDebugEnabled()){
+        e.printStackTrace();
+        }
+        log.error("{} 新增接口异常，{}",DocumentCodeEnum.${table.name}.type(),e.getMessage());
+        return ResultDTO.resultFactory(OperationEnum.insert_error);
+        }
+        }
+
+
+/**
+ * 更新
+ *
+ * @param request 参数
+ * @return 结果
+ */
+@PostMapping("update")
+@ApiOperation("update${entity}")
+public ResultDTO<String> update${entity}(@RequestBody PostRequestDTO<${entity}DTO> request) {
+
+        log.info("{} 修改接口，参数{}",DocumentCodeEnum.${table.name}.type(),JSONUtil.toJsonStr(request));
+        try {
+        return service.update${entity}(request.getBody());
+        }catch (Exception e){
+        if(log.isDebugEnabled()){
+        e.printStackTrace();
+        }
+        log.error("{} 修改接口异常，{}",DocumentCodeEnum.${table.name}.type(),e.getMessage());
+        return ResultDTO.resultFactory(OperationEnum.update_error);
+        }
+
+
+        }
+
+/**
+ * 分页查新
+ *
+ * @param request 参数
+ * @return 列表
+ */
+@GetMapping("pageList")
+@ApiOperation("pageList")
+public ResultDTO<List<${entity}>> select${entity}Page(RequestDTO request) {
+
+        log.info("{} 分页接口，参数{}",DocumentCodeEnum.${table.name}.type(),JSONUtil.toJsonStr(request));
+        try {
+        return service.select${entity}Page(request);
+        }catch (Exception e){
+        if(log.isDebugEnabled()){
+        e.printStackTrace();
+        }
+        log.error("{} 分页接口异常，{}",DocumentCodeEnum.${table.name}.type(),e.getMessage());
+        return new ResultDTO(false);
+        }
+        }
+
+
+/**
+ * 查询详情
+ *
+ * @param request 参数
+ * @return 单条
+ */
+@GetMapping("selectInfo")
+@ApiOperation("selectInfo")
+public ResultDTO<${entity}DTO> select${entity}ById(RequestDTO request) {
+
+        log.info("{} 单条记录明细接口，参数{}",DocumentCodeEnum.${table.name}.type(),JSONUtil.toJsonStr(request));
+        try {
+        return service.select${entity}ById(request.getId());
+        }catch (Exception e){
+        if(log.isDebugEnabled()){
+        e.printStackTrace();
+        }
+        log.error("{} 单条记录明细接口异常，{}",DocumentCodeEnum.${table.name}.type(),e.getMessage());
+        return new ResultDTO(false);
+        }
+        }
+
+
+/**
+ * 删除
+ *
+ * @param request 参数
+ * @return 列表
+ */
+@PostMapping("delete")
+@ApiOperation("delete")
+public ResultDTO<String> delete(@RequestBody RequestDTO request) {
+
+        log.info("{} 删除接口，参数{}",DocumentCodeEnum.${table.name}.type(),JSONUtil.toJsonStr(request));
+        try {
+        service.delete${entity}(StringUtil.string2List(request.getIds()));
+        return ResultDTO.resultFactory(OperationEnum.delete_success);
+        }catch (Exception e){
+        if(log.isDebugEnabled()){
+        e.printStackTrace();
+        }
+        log.error("{} 删除接口异常，{}",DocumentCodeEnum.${table.name}.type(),e.getMessage());
+        return new ResultDTO(false);
+        }
+
+        }
+
+
+/**
+ * 提交
+ *
+ * @param request 参数
+ * @return 列表
+ */
+@PostMapping("submit")
+@ApiOperation("submit")
+public ResultDTO<String> submit(@RequestBody RequestDTO request) {
+        log.info("{} 提交接口，参数{}", DocumentCodeEnum.${table.name}.type(), JSONUtil.toJsonStr(request));
+        try {
+        return service.submit(request);
+        } catch (Exception e) {
+        if (log.isDebugEnabled()) {
+        e.printStackTrace();
+        }
+        log.error("{} 提交接口异常，{}", DocumentCodeEnum.${table.name}.type(), e.getMessage());
+        return new ResultDTO(false,null,e.getMessage());
+        }
+}
+
+
+        }
+
+#end

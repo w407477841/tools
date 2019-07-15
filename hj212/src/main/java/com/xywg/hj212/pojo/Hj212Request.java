@@ -17,10 +17,6 @@ public class Hj212Request {
 
     private String header;
     private String length;
-    private Map<String,String> contents;
+    private String contents;
     private String  crc;
-    private String footer;
-
-
-
 }

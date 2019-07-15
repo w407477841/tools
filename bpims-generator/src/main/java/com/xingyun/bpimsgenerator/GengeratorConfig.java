@@ -55,9 +55,9 @@ public class GengeratorConfig {
             mpg.setDataSource(dsc());
 
             // 包配置
-            String parentModel = "device";
+            String parentModel = "master";
             //String parentModel = "device.fixedasset";
-            String module = "doc";
+            String module = "standard";
 
             PackageConfig pc = new PackageConfig();
             pc.setController("controller."+parentModel);
@@ -111,8 +111,9 @@ public class GengeratorConfig {
             strategy.setRestControllerStyle(true);
             strategy.setEntityLombokModel(true);
             strategy.setInclude(
-                    "t_project_device_doc_lmechanical",
-                    "t_project_device_doc_lmechanical_file"
+                    "t_project_master_standard_catalogue",
+                    "t_project_master_standard_catalogue_file",
+                    "t_project_master_standard_catalogue_form"
                     );
             strategy.setControllerMappingHyphenStyle(true);
             mpg.setStrategy(strategy);

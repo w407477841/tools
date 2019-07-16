@@ -1,0 +1,150 @@
+.login{
+    height: 100vh;
+    background: url('../images/background.png');
+    position: relative;
+    .header{
+        top:8px;
+        left:16px;
+        position: absolute;
+    }
+    .login__switch{
+        display: flex;
+        width:280px;
+        justify-content: center;
+        align-items: flex-end;
+        position: absolute;
+        top:14px;
+        .login__swich-item{
+            width:96px;
+            font-size: 14px;
+            color: #979bb5;
+            cursor: pointer;
+        }
+        .login__swich-active{
+            width:120px;
+            font-size: 24px;;
+            color: #eff2f4;
+            cursor: pointer;
+        }
+        .login__swich-bar{
+            position: absolute;
+            bottom:4px;
+            left:35px;
+            width:90px;
+            height:4px;
+            text-align: center;
+            background-color: #007cff;
+            transition: linear .3s left;
+        }
+        .login__swich-barS{
+            position: absolute;
+            bottom:4px;
+            width:120px;
+            height:4px;
+            text-align: center;
+            background-color: #007cff;
+            transition: linear .3s left;
+            left:128px;
+        }
+    }
+    .login-form{
+        margin-bottom: 16vh;
+        .ivu-input-large{
+            border-radius: 36px;
+            padding:10px 16px;
+        }
+        .ivu-tabs-bar {
+            opacity:0;
+            z-index: -1;
+            border-bottom: none;
+            .ivu-tabs-nav{
+                display: flex;
+                justify-content: center;
+                align-items: flex-end;
+                float:none;
+                .ivu-tabs-ink-bar{
+                    left:88px;
+                }
+                .ivu-tabs-tab-active{
+                    font-size:24px;
+                    color:#fff;
+                }
+                .ivu-tabs-tab{
+                    display: flex;
+                    align-items: flex-end;
+                    margin-right:0;
+                }
+            }
+        }
+    }
+    .ivu-tabs-nav-container {
+        line-height: 2;
+        font-size: 17px;
+        box-sizing: border-box;
+        white-space: nowrap;
+        overflow: hidden;
+        position: relative;
+        zoom: 1;
+    }
+    .form {
+        padding-top: 1vh;
+        .ivu-btn-large{
+            border-radius: 36px;
+        }
+        .ivu-btn{
+            border-radius: 36px;
+        }
+        .input-verify {
+            width: 60%;
+        }
+        .count-verify, .send-verify {
+            width: 100px;
+        }
+    }
+    .forget-pass, .other-way {
+        font-size: 14px;
+    }
+    .login-btn, .other-login  {
+        margin-top: 3vh;
+        border-radius: 36px;
+        .login__tips{
+            font-size: 14px;
+            color:#fff;
+        }
+    }
+    .other-icon {
+        cursor: pointer;
+        margin-left: 10px;
+        margin-bottom: -4px;
+        color: rgba(0,0,0,.2);
+        :hover {
+            color: #2d8cf0;
+        }
+    }
+    .lower {
+        margin-bottom: -6px;
+    }
+    .foot{
+        margin-bottom: 2vh;
+        color: rgba(0,0,0,.45);
+        font-size: 14px;
+        .copyright{
+            color: #666784;
+            a{
+                color: #666784;
+            }
+        }
+        .help {
+            margin: 0 auto;
+            margin-bottom: 1vh;
+            width: 60%;
+            .item{
+                color: #666784;
+            }
+            :hover{
+                color:#007cff;
+            }
+        }
+    }
+    
+}

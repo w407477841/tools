@@ -1,0 +1,114 @@
+##########################################################
+##################  所有dev的配置  #################
+##########################################################
+
+server:
+  port: 8091
+
+############ xywg #########
+xywg:
+############# cache ##########
+  xycache:
+    enabled: true
+  node:
+    enabled: true
+    name: cloud1
+    url: 192.168.20.160:${server.port}
+
+
+###################  spring配置  ###################
+
+###################  redis配置  ###################
+spring:
+############### i18n #####################
+  messages:
+    encoding: UTF-8
+    basename: i18n.xywg
+##############数据库######################
+  datasource:
+    url: jdbc:mysql://118.31.69.25:3306/iot_cloud?autoReconnect=true&useUnicode=true&characterEncoding=utf-8&useServerPrepStmts=false&rewriteBatchedStatements=true&allowMultiQueries=true
+    username: root
+    password: Xingyun*_001
+    db-name: xyiothubdemo
+    filters: log4j,mergeStat
+################## redis ######################
+  redis:
+      database: 0
+      host: 121.43.151.100
+      port: 6379
+      password: duanjudy@123
+      timeout: 10000
+      jedis:
+        pool:
+          max-active: 8 #连接池最大连接数(使用负值表示没有限制)
+          max-wait: -1  #连接池最大阻塞等待时间(负值表示没有限制)
+          max-idle: 5  #连接池中的最大空闲连接
+          min-idle: 0
+  servlet:
+    multipart:
+      max-file-size: 10485760 # 10m
+
+
+
+###################  mybatis-plus配置  ###################
+mybatis-plus:
+  mapper-locations: classpath*:**/dao/mapping/*.xml
+  typeAliasesPackage: com.xywg.iot.modular.*.model
+  global-config:
+    id-type: 0  #0:数据库ID自增   1:用户输入id  2:全局唯一id(IdWorker)  3:全局唯一ID(uuid)
+    db-column-underline: false
+    refresh-mapper: true
+    logic-delete-value: 1
+    logic-not-delete-value: 0
+    sql-injector: com.baomidou.mybatisplus.mapper.LogicSqlInjector
+    metaObjectHandler: com.xywg.iot.aop.MyMetaObjectHandler
+  configuration:
+    map-underscore-to-camel-case: false
+    cache-enabled: true #配置的缓存的全局开关
+    lazyLoadingEnabled: true #延时加载的开关
+    multipleResultSetsEnabled: true #开启的话，延时加载一个属性时会加载该对象全部属性，否则按需加载属性
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #打印sql语句,调试用
+
+####################  netty ########################
+
+#指定数据接收中心的配置
+netty:
+  iotNettyUrl: 127.0.0.1   #数据消费接收中心的IP
+  iotNettyPort: 9628      #netty数据接收监听端口
+  iotNettyWebPort: 8090    #数据接收中心web 服务启动端口
+
+
+
+
+################# jwt #########################
+jwt:
+  token-header: iot
+  user-header: user
+  random-header: random
+############### 健康节点 ####################
+management:
+  endpoint:
+    health:
+      show-details: when_authorized #带权限的可以查看明细，否则只能看节点状态
+      roles: ["THIRD"]
+  endpoints:
+    web:
+      exposure:
+        include: ["*"]
+##################### ftp ###########################
+ftp:
+  host: 192.168.1.209
+  port: 21
+  username: smartsite
+  password: 123456
+  root-path: industrial_iot
+
+
+
+
+
+
+
+
+
+

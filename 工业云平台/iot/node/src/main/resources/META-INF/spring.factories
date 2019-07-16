@@ -1,0 +1,5 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.xywg.iot.node.AutoConfigNode
+com.xywg.iot.node.service.XyNodeService=\
+  com.xywg.iot.node.service.impl.XyNodeServiceImpl
+

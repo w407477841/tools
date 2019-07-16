@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xywg.iot.modular.product.dao.ProductInfoMapper">
+    <select id="getFunctionList" parameterType="java.util.Map" resultType="com.xywg.iot.modular.product.vo.FunctionVo">
+        SELECT * FROM
+        (SELECT
+        e.id,
+        t.`name` AS productType,
+        '事件' AS functionType,
+        e.`name`,
+        e.`key`,
+        e.event_type AS eventType,
+        '' AS dataType,
+        '' AS `min`,
+        '' AS `max`,
+        '' AS step,
+        '' AS unit,
+        '' AS wrType,
+        '' AS isSync,
+        '' AS alarmExpression,
+        e.comments,
+        i.type AS typeId,
+        e.create_time AS createTime
+        FROM
+        t_product_event e
+        LEFT JOIN
+        t_product_info i
+        ON i.id = e.product_id
+        LEFT JOIN
+        t_master_type t
+        ON t.id = i.type
+        WHERE e.is_del = 0 AND e.product_id = #{id}
+        <if test="createUser != null">
+            AND e.create_user = #{createUser}
+        </if>
+        UNION ALL
+        SELECT
+        m.id,
+        t.name AS productType,
+        '方法' AS functionType,
+        m.`name`,
+        m.`key`,
+        '' AS eventType,
+        '' AS dataType,
+        '' AS `min`,
+        '' AS `max`,
+        '' AS step,
+        '' AS unit,
+        '' AS wrType,
+        m.is_sync AS isSync,
+        '' AS alarmExpression,
+        m.comments,
+        i.type AS typeId,
+        m.create_time AS createTime
+        FROM
+        t_product_method m
+        LEFT JOIN
+        t_product_info i
+        ON i.id = m.product_id
+        LEFT JOIN
+        t_master_type t
+        ON t.id = i.type
+        WHERE m.is_del = 0 AND m.product_id = #{id}
+        <if test="createUser != null">
+            AND m.create_user = #{createUser}
+        </if>
+        UNION ALL
+        SELECT
+        p.id,
+        t.name AS productType,
+        '属性' AS functionType,
+        p.`name`,
+        p.`key`,
+        '' AS eventType,
+        p.data_type AS dataType,
+        p.`min`,
+        p.`max`,
+        p.step,
+        p.unit,
+        p.wr_type AS wrType,
+        '' AS isSync,
+        p.alarm_expression AS alarmExpression,
+        p.comments,
+        i.type AS typeId,
+        p.create_time AS createTime
+        FROM
+        t_product_property p
+        LEFT JOIN
+        t_product_info i
+        ON i.id = p.product_id
+        LEFT JOIN
+        t_master_type t
+        ON t.id = i.type
+        WHERE p.is_del = 0 AND p.product_id = #{id}
+        <if test="createUser != null">
+            AND p.create_user = #{createUser}
+        </if>
+        )s
+        ORDER BY s.createTime DESC
+    </select>
+
+    <select id="selectProduct" parameterType="java.util.Map" resultType="com.xywg.iot.modular.product.vo.ProductInfoVo">
+        SELECT
+        id,
+        `name`,
+        `type`,
+        product_key AS productKey,
+        product_secret AS productSecret,
+        version,
+        (SELECT `name` FROM t_master_type WHERE id = t_product_info.type) AS typeName,
+        link_type AS linkType,
+        (SELECT `name` FROM t_master_link_type WHERE id = t_product_info.link_type) AS linkTypeName,
+        status,
+        modify_time AS modifyTime,
+        (SELECT COUNT(id) FROM t_device_info WHERE product_id = t_product_info.id AND is_del = 0) AS deviceNum
+        FROM
+        t_product_info
+        WHERE is_del = 0
+        <if test="name != null and name != ''">
+            AND `name` LIKE concat('%',#{name},'%')
+        </if>
+        <if test="createUser != null">
+            AND create_user = #{createUser}
+        </if>
+        ORDER BY create_time DESC
+    </select>
+</mapper>

@@ -1,0 +1,357 @@
+.search {
+    .operation {
+        margin-bottom: 2vh;
+    }
+    .select-count {
+        font-size: 13px;
+        font-weight: 600;
+        color: #40a9ff;
+    }
+    .select-clear {
+        margin-left: 10px;
+    }
+    .page{
+        margin-top: 2vh;
+    }
+    .drop-down{
+        font-size: 13px;
+        margin-left: 5px;
+    }
+}
+
+.upload {
+    margin-top: 10px;
+}
+
+.enterprise{
+    background:#fff;
+    padding:16px;
+    &__top{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom:20px;
+        position: relative;
+        &-steps{
+            width:355px;
+            .ivu-steps-title{
+                margin-bottom:0;
+            }
+            .ivu-steps-item:last-child{
+                width:89px !important;
+            }
+            .ivu-steps-item:nth-child(1){
+                width:133px !important;
+            }
+            .ivu-steps-item:nth-child(2){
+                width:133px !important;
+            }
+        }
+        &-title{
+            padding-left:5px;
+        }
+    }
+    &__titleBlock{
+        padding: 12px 16px 12px 16px;
+        background: #f8f8f9;
+        color:#585860;
+    }
+    &__form{
+        margin-top:16px;
+        &-tips{
+            color: #a6a6ae;
+            line-height: 18px;
+            padding:5px 0 0;
+        }
+        &-counter{
+            align-self: flex-end;
+            justify-self: flex-end;
+        }
+        &-counter{
+            width:100%;
+            text-align: right;
+        }
+        &-button{
+            background-color:rgba(0,124,255,.1);
+            border:none;
+            span{
+                color:#007cff;
+            }
+        }
+    }
+    &__line{
+        width:100%;
+        height:1px;
+        background-color:#e7e9ed;
+    }
+    &__radio{
+        display: block;
+        width:400px;
+        padding-left:122px;
+        padding-top:20px;
+        color: #130a33;
+    }
+    &__submit{
+        margin-left:122px;
+        margin-top:20px;
+        padding-left:40px;
+        padding-right:40px;
+    }
+    &__uploadList{
+        width: 104px;
+        height: 72px;
+        text-align: center;
+        line-height: 60px;
+        border: 1px solid transparent;
+        border-radius: 4px;
+        overflow: hidden;
+        background: #fff;
+        position: relative;
+        box-shadow: 0 1px 1px rgba(0,0,0,.2);
+        margin-right: 4px;
+        &-img{
+            display: inline-block;
+            width: 100%;
+	        height: 100%;
+        }
+        &-cover{
+            display: none;
+            position: absolute;
+            top: 70%;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,.6);
+            i{
+                color: #fff;
+                font-size: 20px;
+                cursor: pointer;
+                margin: 0 2px;
+            }
+        }
+        &:hover &-cover{
+                display: flex;
+                justify-content: space-around;
+        }
+    }
+    &__upload{
+        display:flex;
+        width: 104px;
+        height: 70px;
+        line-height: 72px;
+        flex-direction: column;
+        justify-content: center;
+        align-items:center;
+        p{
+            height:25px;
+            line-height: 25px;
+        }   
+    }
+    &__title{
+        padding-bottom:20px;
+        padding-left:5px;
+    }
+}
+.ivu-upload-list{
+    display: flex;
+    .ivu-upload-list-file{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        .ivu-progress{
+            width:0;
+        }
+    }
+}
+.ivu-upload-select{
+    display: inline-flex;
+    flex-wrap: nowrap;
+    span{
+        flex-shrink:0;
+    }
+    
+}
+.ivu-upload-list-file{
+    flex-shrink:0;
+}
+.ivu-upload-list-remove{
+    padding-left:5px;
+}
+
+.information{
+    background:#fff;
+    padding:16px;
+    &__top{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom:20px;
+        position: relative;
+        &-steps{
+            width:355px;
+            .ivu-steps-title{
+                margin-bottom:0;
+            }
+            .ivu-steps-item:last-child{
+                width:89px !important;
+            }
+            .ivu-steps-item:nth-child(1){
+                width:133px !important;
+            }
+            .ivu-steps-item:nth-child(2){
+                width:133px !important;
+            }
+        }
+        &-tips{
+            padding:2px 8px;;
+            border-top-left-radius: 18px;
+            border-bottom-left-radius: 0%;
+            border-top-right-radius: 18px;
+            border-bottom-right-radius: 18px;
+            background-color:#007cff;
+            color:#fff;
+            margin-left:10px;
+            position: absolute;
+            left:55px;
+        }
+        &-title{
+            padding-left:5px;
+        }
+    }
+    &__titleBlock{
+        padding: 12px 16px 12px 16px;
+        background: #f8f8f9;
+        color:#585860;
+    }
+    &__form{
+        margin-top:16px;
+        &-tips{
+            color: #a6a6ae;
+            line-height: 18px;
+            padding:5px 0 0;
+        }
+        &-counter{
+            align-self: flex-end;
+            justify-self: flex-end;
+        }
+        &-counter{
+            width:100%;
+            text-align: right;
+        }
+        &-button{
+            background-color:rgba(0,124,255,.1);
+            border:none;
+            span{
+                color:#007cff;
+            }
+        }
+    }
+    &__line{
+        width:100%;
+        height:1px;
+        background-color:#e7e9ed;
+    }
+    &__radio{
+        display: block;
+        width:100%;
+        padding-left:122px;
+        padding-top:20px;
+        color: #130a33;
+    }
+    &__submit{
+        margin-left:122px;
+        margin-top:20px;
+        padding-left:40px;
+        padding-right:40px;
+    }
+    &__uploadList{
+        // display: inline-block;
+        width: 102px;
+        height: 72px;
+        text-align: center;
+        line-height: 60px;
+        border: 1px solid transparent;
+        border-radius: 4px;
+        overflow: hidden;
+        background: #fff;
+        position: relative;
+        box-shadow: 0 1px 1px rgba(0,0,0,.2);
+        margin-right: 4px;
+        z-index:99;
+        &-img{
+            display: inline-block;
+            width: 100%;
+	        height: 100%;
+        }
+        &-cover{
+            display: none;
+            position: absolute;
+            top: 70%;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,.6);
+            i{
+                color: #fff;
+                font-size: 20px;
+                cursor: pointer;
+                margin: 0 2px;
+            }
+        }
+        &:hover &-cover{
+                display: flex;
+                justify-content: space-around;
+        }
+    }
+    &__frontUpload{
+        display:flex;
+        width: 104px;
+        height: 70px;
+        line-height: 72px;
+        flex-direction: column;
+        justify-content: center;
+        align-items:center;
+        background-image:url('~@/images/information-front.png');
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: 50% 50%;
+    }
+    &__backUpload{
+        display:flex;
+        width: 104px;
+        height: 70px;
+        line-height: 72px;
+        flex-direction: column;
+        justify-content: center;
+        align-items:center;
+        background-image:url('~@/images/information-back.png');
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: 50% 50%;
+    }
+}
+.ivu-upload-list{
+    display: flex;
+    .ivu-upload-list-file{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        .ivu-progress{
+            width:0;
+        }
+    }
+}
+.ivu-upload-select{
+    display: inline-flex;
+    flex-wrap: nowrap;
+    span{
+        flex-shrink:0;
+    }
+    
+}
+.ivu-upload-list-file{
+    flex-shrink:0;
+}
+.ivu-upload-list-remove{
+    padding-left:5px;
+}

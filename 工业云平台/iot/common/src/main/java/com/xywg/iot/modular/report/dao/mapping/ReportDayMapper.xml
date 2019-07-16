@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xywg.iot.modular.report.dao.ReportDayMapper">
+
+
+    <select id="selectDailyAddDevice" resultType="com.xywg.iot.modular.report.vo.ReportDayVO">
+
+
+SELECT
+	su.id AS reportUser,
+	'${daily}' AS reportDate,
+	(
+	SELECT
+		count( 1 )
+	FROM
+		t_device_info
+	WHERE
+		is_del = 0
+		AND product_id IN ( SELECT id FROM t_product_info WHERE create_user = su.id ) and is_del = 0
+	) AS total,
+	(
+	SELECT
+		count( 1 )
+	FROM
+		t_device_info
+	WHERE
+		is_del = 0
+		AND product_id IN ( SELECT id FROM t_product_info WHERE is_del = 0 and create_user = su.id )
+		AND add_time LIKE '${daily}%'
+	) AS addAccount,
+	(
+	SELECT
+		count( 1 )
+	FROM
+		t_device_property_record
+	WHERE
+		collect_time LIKE '${daily}%' and device_id IN ( SELECT id FROM t_device_info WHERE is_del = 0 and product_id IN ( SELECT id FROM t_product_info WHERE create_user = su.id ) )
+	) AS dataAccount
+FROM
+	sys_user su
+
+
+
+    </select>
+</mapper>

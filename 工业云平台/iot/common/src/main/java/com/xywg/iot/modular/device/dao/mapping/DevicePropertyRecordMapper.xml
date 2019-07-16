@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xywg.iot.modular.device.dao.DevicePropertyRecordMapper">
+
+    <!-- 开启二级缓存 -->
+    <select id="getRunCondition" parameterType="java.util.Map" resultType="com.xywg.iot.modular.device.vo.DevicePropertyRecordVo">
+        SELECT
+        dpr.id,
+        dpr.collect_time AS collectTime,
+        (SELECT device_no FROM t_device_info WHERE id = #{id}) AS deviceNo,
+        <!-- (SELECT GROUP_CONCAT(pp.name,':',dprd.data_value) FROM t_device_property_record_detail dprd LEFT JOIN t_product_property pp ON dprd.property_id = pp.id WHERE dprd.is_del = 0 AND dprd.id IN
+       (SELECT d.id FROM t_device_property_record_detail d WHERE d.is_del = 0 AND d.record_id = dpr.id)) AS dataDetail,-->
+        dpr.data_detail AS dataDetail ,
+       <!-- (SELECT GROUP_CONCAT(dprd.is_alarm) FROM t_device_property_record_detail dprd LEFT JOIN t_product_property pp ON dprd.property_id = pp.id WHERE dprd.is_del = 0 AND dprd.id IN
+        (SELECT d.id FROM t_device_property_record_detail d WHERE d.is_del = 0 AND d.record_id = dpr.id)) AS alarmDetail -->
+        dpr.alarm_detail AS alarmDetail
+        FROM t_device_property_record dpr
+        LEFT JOIN
+        t_device_info di
+        ON di.id = dpr.device_id
+        WHERE dpr.is_del = 0 AND dpr.device_id = #{id}
+        <if test="beginDate != null">
+            AND date_format(dpr.collect_time,'%Y-%m-%d') >= date_format(#{beginDate},'%Y-%m-%d')
+        </if>
+        <if test="endDate != null">
+            AND date_format(#{endDate},'%Y-%m-%d') >= date_format(dpr.collect_time,'%Y-%m-%d')
+        </if>
+        <if test="createUser != null">
+            AND di.create_user = #{createUser}
+        </if>
+        order by dpr.collect_time desc
+    </select>
+</mapper>

@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xywg.iot.modular.product.dao.ProductFunctionMapper">
+
+    <select id="selectProductFunctionPage" parameterType="java.util.Map" resultType="com.xywg.iot.modular.product.bean.ProductFunctionBean">
+        select * from
+        (select
+
+        (select `name` from t_master_type where t_master_type.id =  t_master_property.type_id ) as productType
+        ,CONCAT( t_master_property.id,"#2") id
+        , '属性' as  functionType
+        , `name` as functionName
+        , `key`
+        , comments
+        ,create_time as createTime
+        from t_master_property
+        where t_master_property.is_del = 0
+        union  all
+
+        select (select `name` from t_master_type where t_master_type.id =  t_master_method.type_id ) as productType
+        ,CONCAT(t_master_method.id,"#3") id
+        , '方法' as  functionType
+        , `name` as functionName
+        , `key`
+        , comments
+        , create_time as createTime
+        from
+        t_master_method
+       where t_master_method.is_del = 0
+        union all
+        select (select `name` from t_master_type where t_master_type.id =  t_master_event.type_id ) as productType
+        ,	CONCAT(t_master_event.id,"#1") id
+        , '事件' as  functionType
+        , `name` as functionName
+        , `key`
+        , comments
+        , create_time as createTime
+        from
+        t_master_event
+
+
+        where t_master_event.is_del =  0
+        ) m <where>
+        <if test = "name!=null and name !=''">
+            productType like '%${name}%'
+            or
+            functionType like '%${name}%'
+        </if>
+        <if test="functionName != null and functionName != ''">
+            AND functionName = #{functionName}
+        </if>
+        <if test="keyName != null and keyName != ''">
+            AND `key` = #{keyName}
+        </if>
+        </where>
+        order by createTime desc
+
+    </select>
+
+    <select id="selectFunctionList" resultType="com.xywg.iot.modular.product.bean.ProductFunctionBean">
+        select * from
+        (select
+        (select `name` from t_master_type where t_master_type.id =  t_master_property.type_id ) as productType
+        ,CONCAT( t_master_property.id,"#2") id
+        , '属性' as  functionType
+        , `name` as functionName
+        , `key`
+        , comments
+        ,create_time as createTime
+        from t_master_property
+        where t_master_property.is_del = 0
+        union  all
+        select (select `name` from t_master_type where t_master_type.id =  t_master_method.type_id ) as productType
+        ,CONCAT(t_master_method.id,"#3") id
+        , '方法' as  functionType
+        , `name` as functionName
+        , `key`
+        , comments
+        , create_time as createTime
+        from
+        t_master_method
+        where t_master_method.is_del = 0
+        union all
+        select (select `name` from t_master_type where t_master_type.id =  t_master_event.type_id ) as productType
+        ,	CONCAT(t_master_event.id,"#1") id
+        , '事件' as  functionType
+        , `name` as functionName
+        , `key`
+        , comments
+        , create_time as createTime
+        from
+        t_master_event
+        where t_master_event.is_del =  0
+        ) m
+        GROUP by functionName
+    </select>
+
+    <select id="selectKeyList" resultType="com.xywg.iot.modular.product.bean.ProductFunctionBean">
+        select * from
+        (select
+        (select `name` from t_master_type where t_master_type.id =  t_master_property.type_id ) as productType
+        ,CONCAT( t_master_property.id,"#2") id
+        , '属性' as  functionType
+        , `name` as functionName
+        , `key`
+        , comments
+        ,create_time as createTime
+        from t_master_property
+        where t_master_property.is_del = 0
+        union  all
+        select (select `name` from t_master_type where t_master_type.id =  t_master_method.type_id ) as productType
+        ,CONCAT(t_master_method.id,"#3") id
+        , '方法' as  functionType
+        , `name` as functionName
+        , `key`
+        , comments
+        , create_time as createTime
+        from
+        t_master_method
+        where t_master_method.is_del = 0
+        union all
+        select (select `name` from t_master_type where t_master_type.id =  t_master_event.type_id ) as productType
+        ,	CONCAT(t_master_event.id,"#1") id
+        , '事件' as  functionType
+        , `name` as functionName
+        , `key`
+        , comments
+        , create_time as createTime
+        from
+        t_master_event
+        where t_master_event.is_del =  0
+        ) m
+        GROUP by `key`
+    </select>
+</mapper>

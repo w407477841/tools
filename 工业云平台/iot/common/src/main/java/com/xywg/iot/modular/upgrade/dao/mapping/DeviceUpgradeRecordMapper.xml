@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xywg.iot.modular.upgrade.dao.DeviceUpgradeRecordMapper">
+
+    <select id="getDeviceUpgradeRecordList" resultType="com.xywg.iot.modular.upgrade.model.DeviceUpgradeRecordData">
+        select
+          a.id,
+          a.product_id as productId,
+          a.device_id as deviceId,
+          a.package_id as packageId,
+          a.issued_flag as issuedFlag,
+          b.version ,
+          b.path,
+          c.product_key as productKey,
+          d.device_no as deviceNo,
+          d.device_secret as deviceSecret
+          from  t_device_upgrade_record a
+          left join t_device_upgrade_package b on a.package_id=b.id and b.is_del=0
+          left join t_product_info c  on a.product_id =c.id and c.is_del=0
+          left join t_device_info d  on a.device_id = d.id  and  d.is_del=0
+        where a.is_del =0
+        ${ew.sqlSegment}
+   </select>
+
+</mapper>

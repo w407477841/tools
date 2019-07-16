@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xywg.iot.modular.device.dao.DeviceInfoMapper">
+
+    <select id="deviceAddr" resultType="com.xywg.iot.modular.device.vo.DeviceAddrVO">
+
+        select  count(1) account ,substring_index(address,'|',-1) `name` from t_device_info
+        where product_id in (select id from t_product_info where create_user = #{createUser}) and is_del  = 0
+        GROUP BY substring_index(address,'|',-1)  ORDER BY account desc
+
+    </select>
+
+    <select id="selectDevice" parameterType="java.util.Map" resultType="com.xywg.iot.modular.device.vo.DeviceInfoVo">
+        SELECT
+        id,
+        `name`,
+        device_no AS deviceNo,
+        status,
+        (CASE status WHEN 1 THEN '未激活' WHEN 2 THEN '离线' WHEN 3 THEN '在线' END) AS statusName,
+        product_id AS productId,
+        device_secret AS deviceSecret,
+        (SELECT `name` FROM t_product_info WHERE id = t_device_info.product_id) AS productName,
+        ip,
+        (SELECT version FROM t_product_info WHERE id = t_device_info.product_id) AS version,
+        add_time AS addTime,
+        last_time AS lastTime,
+        activation_time AS activationTime,
+        `position`,
+        (SELECT `name` FROM t_master_type WHERE id = (SELECT `type` FROM t_product_info WHERE id = t_device_info.product_id)) AS typeName,
+        (SELECT link_type FROM t_product_info WHERE id = t_device_info.product_id) AS linkType,
+        (SELECT `name` FROM t_master_link_type WHERE id = (SELECT link_type FROM t_product_info WHERE id = t_device_info.product_id)) AS linkTypeName,
+        (SELECT product_key FROM t_product_info WHERE id = t_device_info.product_id) AS productKey,
+        comments,
+        create_time AS createTime,
+        create_user AS createUser,
+        create_user_name AS createUserName
+        FROM
+        t_device_info
+        WHERE is_del = 0
+        <if test="deviceNo != null and deviceNo != ''">
+            AND device_no LIKE concat('%',#{deviceNo},'%')
+        </if>
+        <if test="createUser != null">
+            AND create_user = #{createUser}
+        </if>
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="selectDeviceById" parameterType="java.lang.Integer" resultType="com.xywg.iot.modular.device.vo.DeviceInfoVo">
+        SELECT
+        di.id,
+        di.`name`,
+        di.device_no AS deviceNo,
+        di.product_id AS productId,
+        di.device_secret AS deviceSecret,
+        di.ip,
+        di.last_time AS lastTime,
+        di.comments,
+        pi.version,
+        pi.product_key AS productKey,
+        (CASE di.status WHEN 1 THEN '未激活' WHEN 2 THEN '离线' WHEN 3 THEN '在线' END) AS statusName,
+        lt.name AS linkTypeName
+        FROM
+        t_device_info di
+        LEFT JOIN
+        t_product_info pi
+        ON pi.id = di.product_id
+        LEFT JOIN
+        t_master_link_type lt
+        ON lt.id = pi.link_type
+        WHERE di.id = #{id}
+    </select>
+</mapper>

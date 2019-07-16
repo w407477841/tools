@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xywg.iot.modular.product.dao.ProductMethodParamMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.xywg.iot.modular.product.model.ProductMethodParam">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="key" property="key" />
+        <result column="data_type" property="dataType" />
+        <result column="min" property="min" />
+        <result column="max" property="max" />
+        <result column="step" property="step" />
+        <result column="bool0" property="bool0" />
+        <result column="bool1" property="bool1" />
+        <result column="data_length" property="dataLength" />
+        <result column="param_type" property="paramType" />
+        <result column="method_id" property="methodId" />
+        <result column="description" property="description" />
+        <result column="unit" property="unit" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, name, key, data_type AS dataType, min, max, step, bool0, bool1, data_length AS dataLength, param_type AS paramType, method_id AS methodId, description, unit
+    </sql>
+
+</mapper>

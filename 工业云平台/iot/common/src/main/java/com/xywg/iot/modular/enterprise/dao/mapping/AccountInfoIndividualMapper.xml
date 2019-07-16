@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xywg.iot.modular.enterprise.dao.AccountInfoIndividualMapper">
+
+    <!-- 开启二级缓存 -->
+    <!--<cache type="org.mybatis.caches.ehcache.LoggingEhcache"/>-->
+
+    <select id="getAccountInfoIndividual" resultType="com.xywg.iot.modular.enterprise.model.vo.AccountInfoIndividualVo">
+        select
+        <include refid="field"/>
+        b.areaname as provinceName,
+        c.areaname as cityName,
+        d.areaname as districtName
+        from t_account_info_individual a
+        left join sys_areas b on a.province=b.id
+        left join sys_areas c on a.city=c.id
+        left join sys_areas d on a.district=d.id
+        where  a.is_del=0
+        ${ew.sqlSegment}
+    </select>
+
+    <sql id="field">
+        a.id,
+        a.type,
+        a.name,
+        a.product_type as productType,
+        a.major_business as majorBusiness,
+        a.identity_no as  identityNo,
+        a.identity_photo AS  identityPhoto,
+        a.staff,
+        a.province,
+        a.city,
+        a.district,
+        a.street,
+        a.tel,
+        a.fax,
+        a.email,
+        a.source,
+        a.comments,
+        a.create_time AS createTime,
+        a.create_user AS  createUser,
+        a.create_user_name AS createUserName,
+        a.audit_status AS auditStatus,
+        a.user_id AS userId,
+    </sql>
+</mapper>

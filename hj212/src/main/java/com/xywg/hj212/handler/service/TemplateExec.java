@@ -31,16 +31,15 @@ public class TemplateExec {
      * @param commandService 逻辑
      */
     public void exec(String sn, ChannelHandlerContext ctx, Map<String,String> content, BaseCommandService commandService ){
-        String logmsg = LogEnum.COMMON.format("开始",sn,"-",commandService.command().getCommandCode(),"-",commandService.command().getCommandName());
-        log.info(logmsg);
+        log.info("设备[{}]开始执行[{}]",sn,commandService.command().getCommandCode());
             long startTime = System.currentTimeMillis();
             if(isNotLogin( sn, ctx)){
+                log.info("设备[{}],未登录，需要执行登录");
                 login( sn, ctx);
             }
             commandService.exec( sn,ctx,content);
             String execTime = (System.currentTimeMillis() - startTime)+"";
-         logmsg = LogEnum.COMMON.format("结束",sn,"总耗时:",sn,execTime,"毫秒");
-         log.info(logmsg);
+        log.info("设备[{}]开始完毕[{}],总耗时[{}]毫秒",sn,commandService.command().getCommandCode(),execTime);
         }
     /**
      * 登录验证
@@ -65,9 +64,8 @@ public class TemplateExec {
                 if(Const.CHANNEL_MAP.containsKey(sn)){
                     //存在未断开的连接,必须先将老的关闭掉
                     Const.CHANNEL_MAP.get(sn).close();
-                    String logmsg = LogEnum.COMMON.format("登录","设备",sn,"存在未断开连接");
-                    log.error(logmsg);
-                    throw new CloseChannelException(logmsg);
+                    log.error("设备[{}],存在未断开连接",sn);
+                    throw new CloseChannelException("存在未断开连接");
                 }
             }else{
                  return true;
@@ -87,6 +85,7 @@ public class TemplateExec {
         Const.CHANNEL_MAP.put(sn,channel);
         String logMsg = LogEnum.COMMON.format("登录","设备",sn,"登录成功");
         log.info(logMsg);
+        log.info("设备[{}] 登录成功",sn);
     }
 
 }

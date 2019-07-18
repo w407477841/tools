@@ -39,6 +39,7 @@ public class MessageHandler extends SimpleChannelInboundHandler<Hj212Request> {
     protected void channelRead0(ChannelHandlerContext ctx, Hj212Request data) throws Exception {
         /*组装数据体*/
         Map<String,String> contentMap =  packageContent(data.getContents());
+        log.info("组装数据体,");
         String sn =  contentMap.get("MN");
         String commCode =  contentMap.get("CN");
         BaseCommandService.actions.forEach(item->{
@@ -56,20 +57,16 @@ public class MessageHandler extends SimpleChannelInboundHandler<Hj212Request> {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        String logMsg = LogEnum.COMMON.format("提醒","有连接创建"+ctx.channel().remoteAddress().toString());
-        log.info(logMsg);
+        log.info("有连接创建[{}]",ctx.channel().remoteAddress().toString());
         linkAccount.increment();
-        logMsg = LogEnum.COMMON.format("提醒","当前总连接数"+linkAccount.longValue());
-        log.info(logMsg);
+        log.info("当前总连接数[{}]",linkAccount.longValue());
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        String logMsg = LogEnum.COMMON.format("提醒","有连接断开"+ctx.channel().remoteAddress().toString());
-        log.info(logMsg);
+        log.info("有连接断开[{}]",ctx.channel().remoteAddress().toString());
         linkAccount.decrement();
-        logMsg = LogEnum.COMMON.format("提醒","当前总连接数"+linkAccount.longValue());
-        log.info(logMsg);
+        log.info("当前总连接数[{}]",linkAccount.longValue());
     }
 
     @Override
@@ -80,11 +77,9 @@ public class MessageHandler extends SimpleChannelInboundHandler<Hj212Request> {
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         log.error(cause.getMessage());
-
         if(cause.getMessage().startsWith(CloseChannelException.class.getName())){
             // 需要关闭
-            String logMsg = LogEnum.COMMON.format("提醒","异常关闭连接");
-            log.info(logMsg);
+            log.info("异常关闭连接");
             ctx.close();
         }
 

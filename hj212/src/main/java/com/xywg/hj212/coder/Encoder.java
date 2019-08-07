@@ -42,7 +42,7 @@ public class Encoder extends MessageToMessageEncoder<Hj212Request> {
         }else{
             length  =contents.length();
         }
-        String lengthStr = StrUtil.fillBefore(""+(length+10),'0',4);
+        String lengthStr = StrUtil.fillBefore(""+(length),'0',4);
         String calcCrc = CRC16Util.crc(StrUtil.utf8Bytes(contents),length);
         sb.append(HEAD).append(lengthStr).append(contents).append(calcCrc).append("\r\n");
 

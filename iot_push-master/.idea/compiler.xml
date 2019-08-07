@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="iot_push_client" />
+        <module name="iot_push_client_starter" />
+        <module name="iot_push_common" />
+        <module name="iot_push_server" />
+        <module name="iot_push_server_starter" />
+        <module name="iot_push_test" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="iot_push" target="1.5" />
+      <module name="iot_push_client" target="1.8" />
+      <module name="iot_push_client_starter" target="1.8" />
+      <module name="iot_push_common" target="1.8" />
+      <module name="iot_push_server" target="1.8" />
+      <module name="iot_push_server_starter" target="1.8" />
+      <module name="iot_push_test" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

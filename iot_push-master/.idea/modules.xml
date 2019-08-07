@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/iot_push.iml" filepath="$PROJECT_DIR$/iot_push.iml" />
+      <module fileurl="file://$PROJECT_DIR$/iot_push_client/iot_push_client.iml" filepath="$PROJECT_DIR$/iot_push_client/iot_push_client.iml" />
+      <module fileurl="file://$PROJECT_DIR$/iot_push_client_starter_test/iot_push_client_starter.iml" filepath="$PROJECT_DIR$/iot_push_client_starter_test/iot_push_client_starter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/iot_push_common/iot_push_common.iml" filepath="$PROJECT_DIR$/iot_push_common/iot_push_common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/iot_push_server/iot_push_server.iml" filepath="$PROJECT_DIR$/iot_push_server/iot_push_server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/iot_push_server_starter_test/iot_push_server_starter.iml" filepath="$PROJECT_DIR$/iot_push_server_starter_test/iot_push_server_starter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/iot_push_test/iot_push_test.iml" filepath="$PROJECT_DIR$/iot_push_test/iot_push_test.iml" />
+    </modules>
+  </component>
+</project>

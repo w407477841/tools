@@ -9,6 +9,7 @@ package com.xywg.hj212.common.enums;
 public enum CommandEnum {
 
     COMMAND_ENUM_DATA("1062","实时数据"),
+    COMMAND_ENUM_SYCNTIME("1013","同步时间"),
     ;
 
     CommandEnum(String commandCode, String commandName) {

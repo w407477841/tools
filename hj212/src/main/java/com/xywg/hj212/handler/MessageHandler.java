@@ -8,6 +8,7 @@ import com.xywg.hj212.common.exceptions.CloseChannelException;
 import com.xywg.hj212.handler.service.BaseCommandService;
 import com.xywg.hj212.handler.service.TemplateExec;
 import com.xywg.hj212.pojo.Hj212Request;
+import com.xywg.hj212.utils.CommonMethod;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -38,7 +39,7 @@ public class MessageHandler extends SimpleChannelInboundHandler<Hj212Request> {
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Hj212Request data) throws Exception {
         /*组装数据体*/
-        Map<String,String> contentMap =  packageContent(data.getContents());
+        Map<String,String> contentMap = CommonMethod.packageContent(data.getContents());
         log.info("组装数据体,");
         String sn =  contentMap.get("MN");
         String commCode =  contentMap.get("CN");
@@ -88,24 +89,5 @@ public class MessageHandler extends SimpleChannelInboundHandler<Hj212Request> {
 
     }
 
-    /**
-     * 包装内容
-     * @param content
-     * @return
-     */
-    private Map<String,String> packageContent(String content){
-        Map<String,String> result = new HashMap<>(32);
-        String[] kvs =  content.split(";");
-        int index;
-        for(String kv : kvs){
-            for(int i=0;i<CONTENT_PREFIXS_SIZE;i++){
-                index =  kv.indexOf(CONTENT_PREFIXS[i]+"=");
-                if(-1!=index){
-                    result.put(CONTENT_PREFIXS[i], StrUtil.subAfter(kv,CONTENT_PREFIXS[i]+"=",false));
-                }
-            }
-        }
-        return result;
-    }
 
 }

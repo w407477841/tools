@@ -1,0 +1,10 @@
+server:
+  port: 8989
+
+
+spring:
+ freemarker:
+    template-loader-path: classpath:/pages/
+    suffix: .html
+    content-type: text/html
+    charset: UTF-8

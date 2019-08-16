@@ -14,7 +14,7 @@
         <module name="iot_push_test" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
+    <bytecodeTargetLevel target="8">
       <module name="iot_push" target="1.5" />
       <module name="iot_push_client" target="1.8" />
       <module name="iot_push_client_starter" target="1.8" />

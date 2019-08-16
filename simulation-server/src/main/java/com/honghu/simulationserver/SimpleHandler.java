@@ -1,4 +1,4 @@
-package com.wyf.iot.handler;
+package com.honghu.simulationserver;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandler;
@@ -18,13 +18,13 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @ChannelHandler.Sharable
-public class SimpleHandler extends SimpleChannelInboundHandler<ByteBuf> {
+public class SimpleHandler extends SimpleChannelInboundHandler<String> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SimpleHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(com.wyf.iot.handler.SimpleHandler.class);
 
 
     @Override
-    protected void channelRead0(ChannelHandlerContext channelHandlerContext, ByteBuf o) throws Exception {
-
+    protected void channelRead0(ChannelHandlerContext channelHandlerContext, String o) throws Exception {
+            log.info("收到数据[{}]",o);
     }
 }

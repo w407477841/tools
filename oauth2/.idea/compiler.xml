@@ -6,6 +6,8 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="clianea" />
+        <module name="common" />
         <module name="oauth2client" />
         <module name="oauth2server" />
       </profile>

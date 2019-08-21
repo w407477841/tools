@@ -17,7 +17,7 @@ public class ServerApplication {
         ServerProperties serverProperties   = cac.getBean(ServerProperties.class);
         log.info("------------------------------------------------------------------------------------");
         log.info("|                                OAUTH2服务已启动                                    |");
-        log.info("|                      访问 http://locahost:{}/login.html                          |",serverProperties.getPort());
+        log.info("|                      访问 http://locahost:{}/login                                 |",serverProperties.getPort());
         log.info("------------------------------------------------------------------------------------");
     }
 

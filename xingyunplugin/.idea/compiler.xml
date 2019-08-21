@@ -10,6 +10,7 @@
         <module name="crane-plugin" />
         <module name="craneplugin" />
         <module name="demo" />
+        <module name="environment-plugin" />
         <module name="environmentplugin" />
       </profile>
     </annotationProcessing>

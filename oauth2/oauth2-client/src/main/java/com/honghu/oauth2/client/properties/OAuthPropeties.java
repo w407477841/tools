@@ -4,11 +4,13 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Data
-@ConfigurationProperties(prefix = "hong.oauth2")
+@ConfigurationProperties(prefix = "honghu.oauth2")
 public class OAuthPropeties {
-    /** 客户端首页地址 */
-    private String indexUrl;
-    /** 服务端登录地址 */
+    /** 客户端ID */
+    private String clientId;
+    /** token秘钥 */
+    private String secret;
+    /** 服务器地址 */
     private String serverUrl;
 
 }

@@ -16,6 +16,7 @@
     <modules>
         <module>oauth2-server</module>
         <module>oauth2-client</module>
+        <module>common</module>
     </modules>
 
     <dependencyManagement>

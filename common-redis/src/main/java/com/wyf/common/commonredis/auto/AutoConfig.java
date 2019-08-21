@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wyf.common.commonredis.config.properties.JedisProperties;
+import com.wyf.common.commonredis.util.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -22,6 +23,8 @@ import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.*;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
 
 import java.lang.reflect.Method;
 
@@ -53,6 +56,12 @@ public class AutoConfig extends CachingConfigurerSupport {
         return super.errorHandler();
     }
 
+    @Bean
+    public RedisUtil redisUtil(JedisPool jedisPool){
+
+        return new RedisUtil(jedisPool);
+    }
+
     /**
      * 生成key的策略
      * @return
@@ -81,28 +90,49 @@ public class AutoConfig extends CachingConfigurerSupport {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         // 配置连接工厂
         template.setConnectionFactory(jedisConnectionFactory);
-
-        //使用Jackson2JsonRedisSerializer来序列化和反序列化redis的value值（默认使用JDK的序列化方式）
-        Jackson2JsonRedisSerializer jacksonSeial = new Jackson2JsonRedisSerializer(Object.class);
-
-        ObjectMapper om = new ObjectMapper();
-        // 指定要序列化的域，field,get和set,以及修饰符范围，ANY是都有包括private和public
-        om.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
-        // 指定序列化输入的类型，类必须是非final修饰的，final修饰的类，比如String,Integer等会跑出异常
-        om.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
-        jacksonSeial.setObjectMapper(om);
-
-        // 值采用json序列化
-        template.setValueSerializer(jacksonSeial);
-        //使用StringRedisSerializer来序列化和反序列化redis的key值
         template.setKeySerializer(new StringRedisSerializer());
-
-        // 设置hash key 和value序列化模式
         template.setHashKeySerializer(new StringRedisSerializer());
-        template.setHashValueSerializer(jacksonSeial);
+//        //使用Jackson2JsonRedisSerializer来序列化和反序列化redis的value值（默认使用JDK的序列化方式）
+//        Jackson2JsonRedisSerializer jacksonSeial = new Jackson2JsonRedisSerializer(Object.class);
+//
+//        ObjectMapper om = new ObjectMapper();
+//        // 指定要序列化的域，field,get和set,以及修饰符范围，ANY是都有包括private和public
+//        om.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
+//        // 指定序列化输入的类型，类必须是非final修饰的，final修饰的类，比如String,Integer等会跑出异常
+//        om.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
+//        jacksonSeial.setObjectMapper(om);
+//
+//        // 值采用json序列化
+//        template.setValueSerializer(jacksonSeial);
+//        //使用StringRedisSerializer来序列化和反序列化redis的key值
+//        template.setKeySerializer(new StringRedisSerializer());
+//
+//        // 设置hash key 和value序列化模式
+//        template.setHashKeySerializer(new StringRedisSerializer());
+//        template.setHashValueSerializer(jacksonSeial);
+//
+//        template.setStringSerializer( new StringRedisSerializer());
         template.afterPropertiesSet();
         return template;
     }
+
+    @Bean
+    public JedisPool redisPoolFactory(JedisProperties jedisProperties)  throws Exception {
+        log.info("JedisPool注入成功！！");
+        log.info("redis地址：" + jedisProperties.getHost() + ":" + jedisProperties.getPort());
+        JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
+        jedisPoolConfig.setMaxIdle(200);
+        jedisPoolConfig.setMaxWaitMillis(10000);
+        // 连接耗尽时是否阻塞, false报异常,ture阻塞直到超时, 默认true
+        jedisPoolConfig.setBlockWhenExhausted(true);
+        // 是否启用pool的jmx管理功能, 默认true
+        jedisPoolConfig.setJmxEnabled(true);
+        JedisPool jedisPool = new JedisPool(jedisPoolConfig,
+                jedisProperties.getHost(),jedisProperties.getPort(),
+                jedisProperties.getTimeout(), jedisProperties.getPassword());
+        return jedisPool;
+    }
+
 
     @Bean
     public JedisConnectionFactory jedisConnectionFactory(  JedisProperties jedisProperties) {

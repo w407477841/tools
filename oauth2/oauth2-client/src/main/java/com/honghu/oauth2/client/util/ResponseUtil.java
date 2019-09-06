@@ -21,19 +21,14 @@ public class ResponseUtil {
      */
     public static void out(ServletResponse response, Map<String, Object> resultMap){
 
-        PrintWriter out = null;
         try {
             response.setCharacterEncoding("UTF-8");
             response.setContentType("application/json");
-            out = response.getWriter();
-            out.println(JSONUtil.toJsonStr(resultMap));
+            response.getWriter().println(JSONUtil.toJsonStr(resultMap));
         } catch (Exception e) {
             log.error(e + "输出JSON出错");
         }finally{
-            if(out!=null){
-                out.flush();
-                out.close();
-            }
+
         }
     }
 

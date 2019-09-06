@@ -8,7 +8,7 @@ import java.util.List;
 
 @Component
 public class IgnoreImpl implements Ignore {
-    private static  final String[] IGNORE = {"/go","/haha"};
+    private static  final String[] IGNORE = {"/hah","/haha2"};
     @Override
     public List<String> ignore() throws Exception {
         return CollectionUtil.toList(IGNORE);

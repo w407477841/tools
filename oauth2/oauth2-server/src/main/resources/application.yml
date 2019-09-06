@@ -3,8 +3,33 @@ server:
 
 
 spring:
- freemarker:
+  freemarker:
     template-loader-path: classpath:/pages/
     suffix: .html
     content-type: text/html
     charset: UTF-8
+  ##############数据库######################
+  datasource:
+    url: jdbc:mysql://118.24.111.210:3306/oauth2?autoReconnect=true&useUnicode=true&characterEncoding=utf-8&useServerPrepStmts=false&rewriteBatchedStatements=true&allowMultiQueries=true
+    username: root
+    password: 123456
+
+###################  mybatis-plus配置  ###################
+mybatis-plus:
+  mapper-locations: classpath*:**/mapper/xml/*.xml
+  typeAliasesPackage: com.honghu.oauth2.*.entity
+  global-config:
+    id-type: 3  #0:数据库ID自增   1:用户输入id  2:全局唯一id(IdWorker)  3:全局唯一ID(uuid)
+    db-column-underline: true
+    refresh-mapper: true
+    logic-delete-value: 1
+    logic-not-delete-value: 0
+  #    sql-injector: com.baomidou.mybatisplus.mapper.LogicSqlInjector
+  #    metaObjectHandler: com.xywg.iot.aop.MyMetaObjectHandler
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: true #配置的缓存的全局开关
+    lazyLoadingEnabled: true #延时加载的开关
+    multipleResultSetsEnabled: true #开启的话，延时加载一个属性时会加载该对象全部属性，否则按需加载属性
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+

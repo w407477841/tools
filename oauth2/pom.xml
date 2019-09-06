@@ -17,10 +17,19 @@
         <module>oauth2-server</module>
         <module>oauth2-client</module>
         <module>common</module>
+        <module>gengerator</module>
     </modules>
 
     <dependencyManagement>
-    <dependencies></dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>6.0.17.Final</version>
+        </dependency>
+
+
+    </dependencies>
     </dependencyManagement>
 
 

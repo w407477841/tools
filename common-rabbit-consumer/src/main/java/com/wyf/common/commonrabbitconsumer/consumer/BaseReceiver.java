@@ -43,7 +43,6 @@ public abstract class BaseReceiver {
                 mqError.setExchange(message.getMessageProperties().getReceivedExchange());
                 mqError.setQueue(message.getMessageProperties().getConsumerQueue());
                 mqError.setRoutingKey(message.getMessageProperties().getReceivedRoutingKey());
-                iMqErrorService.insert(mqError);
                 channel.basicNack(message.getMessageProperties().getDeliveryTag(), false, false);
             }
             else

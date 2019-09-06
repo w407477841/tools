@@ -1,11 +1,11 @@
-package com.honghu.oauth2.server.vo;
+package com.honghu.oauth2.vo;
 
 import lombok.Data;
 
 @Data
 public class ResultVO<T> {
 
-    private Integer code;
+    private Integer status;
 
     private String msg;
 
@@ -14,14 +14,14 @@ public class ResultVO<T> {
     public ResultVO() {
     }
 
-    public ResultVO(Integer code, String msg, T data) {
-        this.code = code;
+    public ResultVO(Integer status, String msg, T data) {
+        this.status = status;
         this.msg = msg;
         this.data = data;
     }
 
-    public ResultVO(Integer code, String msg) {
-        this.code = code;
+    public ResultVO(Integer status, String msg) {
+        this.status = status;
         this.msg = msg;
     }
 

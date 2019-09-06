@@ -1,7 +1,6 @@
 package com.honghu.oauth2.server;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
@@ -20,5 +19,4 @@ public class ServerApplication {
         log.info("|                      访问 http://locahost:{}/login                                 |",serverProperties.getPort());
         log.info("------------------------------------------------------------------------------------");
     }
-
 }

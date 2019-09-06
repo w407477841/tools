@@ -6,6 +6,8 @@ import cn.hutool.json.JSONUtil;
 import com.honghu.oauth2.client.filter.JwtAuthenticationFilter;
 import com.honghu.oauth2.client.properties.OAuthPropeties;
 import com.honghu.oauth2.dto.LoginDTO;
+import com.honghu.oauth2.util.UserUtil;
+import com.honghu.oauth2.vo.ResultVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -62,6 +64,11 @@ public class AutoConfigClient extends WebSecurityConfigurerAdapter {
     public Object login(@RequestBody LoginDTO loginDTO){
         log.info(loginDTO.toString());
         return HttpUtil.post(propeties.getServerUrl(),JSONUtil.toJsonStr(loginDTO));
+    }
+    @GetMapping("/pages")
+    @ResponseBody
+    public ResultVO<String> pages(){
+        return  ResultVO.success(UserUtil.USER_PAGES.get());
     }
 
 }

@@ -42,6 +42,8 @@ public class BaseControllerUtil {
                     case "where":
                         wrapper.where(param.getName(),param.getValue().toString().split(","));
                         break;
+                    default:
+                        break;
                 }
             });
         }

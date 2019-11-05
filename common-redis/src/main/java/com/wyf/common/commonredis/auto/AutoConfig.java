@@ -119,7 +119,7 @@ public class AutoConfig extends CachingConfigurerSupport {
     @Bean
     public JedisPool redisPoolFactory(JedisProperties jedisProperties)  throws Exception {
         log.info("JedisPool注入成功！！");
-        log.info("redis地址：" + jedisProperties.getHost() + ":" + jedisProperties.getPort());
+
         JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
         jedisPoolConfig.setMaxIdle(200);
         jedisPoolConfig.setMaxWaitMillis(10000);
@@ -127,9 +127,17 @@ public class AutoConfig extends CachingConfigurerSupport {
         jedisPoolConfig.setBlockWhenExhausted(true);
         // 是否启用pool的jmx管理功能, 默认true
         jedisPoolConfig.setJmxEnabled(true);
-        JedisPool jedisPool = new JedisPool(jedisPoolConfig,
-                jedisProperties.getHost(),jedisProperties.getPort(),
-                jedisProperties.getTimeout(), jedisProperties.getPassword());
+        JedisPool jedisPool;
+
+        if (null!=jedisProperties.getPassword()&&!"".equals(jedisProperties.getPassword())) {
+            jedisPool = new JedisPool(jedisPoolConfig,
+                    jedisProperties.getHost(),jedisProperties.getPort(),
+                    jedisProperties.getTimeout(), jedisProperties.getPassword());
+            log.info(jedisProperties.toString());
+        } else {
+            jedisPool = new JedisPool(jedisPoolConfig,  jedisProperties.getHost(),jedisProperties.getPort(), jedisProperties.getTimeout());
+        }
+
         return jedisPool;
     }
 

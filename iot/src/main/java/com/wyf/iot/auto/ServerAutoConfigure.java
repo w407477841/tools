@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * 自动化配置初始化服务
  *
- * @author lxr
+ * @author wangyf
  * @create 2017-11-29 19:52
  **/
 @Configuration
